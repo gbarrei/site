@@ -398,24 +398,6 @@ export const caseStudies: CaseStudy[] = [
 // Off the home grid, but their pages stay live.
 export const moreCaseStudies: CaseStudy[] = [
   {
-    slug: "sole-trader-uk",
-    kicker: "Launch / QuickBooks Solopreneur",
-    title: "Launching QuickBooks Sole Trader in the UK",
-    description: "Moving a launch date on the evidence, and launching with the feature that mattered.",
-    challenge:
-      "The product was heading to a fixed general availability date, but beta data showed it was not ready.",
-    approach: [
-      "Raised the risk with senior leadership and proposed a new launch date, which leadership agreed to",
-      "A user beta showed automatic invoice payments was the missing feature that would make the product a winner at launch",
-      "Built the business case, won leadership approval, and got help from the team that owned the feature to launch with it at GA",
-    ],
-    results: [
-      { value: "7K", label: "Gross new subscribers" },
-      { value: "UK", label: "New market unlocked" },
-    ],
-    takeaway: "A date is a promise to customers, not just to leadership. Ship when it is ready.",
-  },
-  {
     slug: "push-notifications",
     kicker: "Experimentation / QuickBooks Mobile",
     title: "Push notifications people actually open",

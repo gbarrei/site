@@ -25,7 +25,7 @@ export default function Work() {
             <Reveal key={study.slug} delay={(i % 2) * 120} className="bg-ink">
               <Link
                 href={`/work/${study.slug}`}
-                className="group relative flex h-full min-h-72 flex-col justify-between overflow-hidden p-8 transition-colors duration-500 hover:bg-ink-2 md:p-10"
+                className="group relative flex h-full flex-col overflow-hidden p-8 transition-colors duration-500 hover:bg-ink-2 md:p-10"
               >
                 <div
                   aria-hidden
@@ -39,7 +39,7 @@ export default function Work() {
                     &rarr;
                   </span>
                 </div>
-                <div className="relative mt-16">
+                <div className="relative mt-8">
                   <div className="font-mono text-sm text-signal">
                     {study.results[0].value}{" "}
                     <span className="text-mist">/ {study.results[0].label}</span>
