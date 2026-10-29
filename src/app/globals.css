@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0b0d;
+  --color-ink-2: #111317;
+  --color-ink-3: #181b21;
+  --color-line: #23262d;
+  --color-bone: #ecebe6;
+  --color-mist: #9a9ea8;
+  --color-signal: #d7ff3c;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-instrument-serif);
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-blink: blink 1.4s steps(2, start) infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes blink {
+    to {
+      visibility: hidden;
+    }
+  }
+}
+
+:root {
+  --grid-line: rgb(255 255 255 / 0.045);
+}
+
+/* Light mode: same tokens, re-tuned so every pairing keeps at least 4.5:1 contrast. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-ink: #f6f5f1;
+    --color-ink-2: #eeece6;
+    --color-ink-3: #e4e1d9;
+    --color-line: #d6d3ca;
+    --color-bone: #111216;
+    --color-mist: #55585f;
+    --color-signal: #4a6a00;
+    --grid-line: rgb(0 0 0 / 0.06);
+  }
+}
+
+html {
+  color-scheme: light dark;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-bone);
+}
+
+::selection {
+  background: var(--color-signal);
+  color: var(--color-ink);
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-marquee {
+    animation: none;
+  }
+}
