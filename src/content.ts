@@ -363,10 +363,10 @@ export const caseStudies: CaseStudy[] = [
       "Secured alignment across multiple international teams and sites",
       "Negotiated and prioritized other teams' requests into a roadmap they used to plan their own work",
       "Hosted global webinars so teams knew how to use the new search",
-      "Cut list load times to single digit seconds, made Receipt Capture transaction information available in under 1 second, and lifted Universal Search click through by 11%",
+      "Made Receipt Capture transaction information available in under 1 second, and lifted Universal Search click through by 11%",
     ],
     results: [
-      { value: "75%", label: "Better than the NLP TP99 latency target" },
+      { value: "75%", label: "Better than the TP99 latency target" },
       { value: "13K/sec", label: "Messages processed" },
       { value: "5X", label: "Increase in queries after the webinars" },
     ],
