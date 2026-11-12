@@ -35,6 +35,12 @@ export default function DigitalTwin() {
     setOpen(true);
     setHint(false);
     localStorage.setItem(HINT_KEY, "1");
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: "twin_open" }),
+      keepalive: true,
+    }).catch(() => {});
   }
 
   function dismissHint() {

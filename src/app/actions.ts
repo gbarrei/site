@@ -1,5 +1,8 @@
 "use server";
 
+import { after } from "next/server";
+import { recordEvent } from "@/lib/stats";
+
 export type ContactState = {
   status: "idle" | "sent" | "error";
   message?: string;
@@ -40,5 +43,6 @@ export async function sendMessage(_: ContactState, formData: FormData): Promise<
       fields,
     };
   }
+  after(() => recordEvent("contact_sent"));
   return { status: "sent" };
 }

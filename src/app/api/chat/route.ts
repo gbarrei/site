@@ -1,4 +1,6 @@
+import { after } from "next/server";
 import { MAX_QUESTIONS } from "@/content";
+import { recordEvent, redis } from "@/lib/stats";
 import { systemPrompt } from "@/twin/knowledge";
 
 // Tried in order: free models are often rate-limited, so fall back to the next one.
@@ -10,13 +12,23 @@ const MODELS = [
 const MAX_HISTORY = 12;
 const MAX_LENGTH = 500;
 
-// Per-IP cap for direct API callers. In memory, so it holds for a single server instance;
-// on a serverless host, swap this for the host's KV store or rate limiting.
+// Per-IP cap for direct API callers. Kept in Redis so it holds across serverless instances;
+// without a database (local development) it falls back to memory.
 const IP_LIMIT = 10;
 const IP_WINDOW_MS = 24 * 60 * 60 * 1000;
 const ipUsage = new Map<string, { count: number; resetAt: number }>();
 
-function overIpLimit(ip: string) {
+async function overIpLimit(ip: string) {
+  if (redis) {
+    try {
+      const key = `twin:ip:${ip}`;
+      const count = await redis.incr(key);
+      if (count === 1) await redis.pexpire(key, IP_WINDOW_MS);
+      return count > IP_LIMIT;
+    } catch (error) {
+      console.error("Redis rate limit failed; using memory", error);
+    }
+  }
   const now = Date.now();
   const usage = ipUsage.get(ip);
   if (!usage || usage.resetAt < now) {
@@ -67,10 +79,12 @@ export async function POST(request: Request) {
   if (!ip) console.warn("No client IP header; skipping per-IP chat limit");
   if (
     messages.filter((m: Message) => m.role === "user").length > MAX_QUESTIONS ||
-    (ip && overIpLimit(ip))
+    (ip && (await overIpLimit(ip)))
   ) {
     return new Response("Question limit reached.", { status: 429 });
   }
+
+  after(() => recordEvent("twin_question"));
 
   let upstream: Response | undefined;
   for (const model of MODELS) {

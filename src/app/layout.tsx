@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import VisitorAnalytics from "@/components/VisitorAnalytics";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -49,7 +50,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
     >
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        {children}
+        <VisitorAnalytics />
+      </body>
     </html>
   );
 }
