@@ -20,13 +20,13 @@ export default function Image() {
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", fontSize: 24, letterSpacing: 6, color: "#d7ff3c" }}>
+        <div style={{ display: "flex", fontSize: 24, letterSpacing: 6, color: "#fc8400" }}>
           GUILLERMO BARREIRO / PRINCIPAL PRODUCT MANAGER
         </div>
         <div style={{ display: "flex", flexDirection: "column", fontSize: 96, lineHeight: 1, letterSpacing: -3 }}>
           <span>Bringing order to chaos</span>
           <span style={{ display: "flex" }}>
-            to make&nbsp;<span style={{ color: "#d7ff3c", fontStyle: "italic" }}>ship</span>&nbsp;
+            to make&nbsp;<span style={{ color: "#fc8400", fontStyle: "italic" }}>ship</span>&nbsp;
             <span style={{ color: "#9a9ea8" }}>happen.</span>
           </span>
         </div>

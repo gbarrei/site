@@ -1,5 +1,13 @@
 import { capabilities } from "@/content";
 
+const dotColors = [
+  "bg-logo-sky",
+  "bg-logo-royal",
+  "bg-logo-violet",
+  "bg-logo-red",
+  "bg-logo-orange",
+];
+
 export default function Marquee() {
   const items = [...capabilities, ...capabilities];
   return (
@@ -12,7 +20,7 @@ export default function Marquee() {
             className="flex items-center gap-8 pr-8 font-mono text-sm tracking-[0.15em] whitespace-nowrap text-mist uppercase"
           >
             {item}
-            <span className="size-1.5 rotate-45 bg-signal" />
+            <span className={`size-1.5 rotate-45 ${dotColors[i % dotColors.length]}`} />
           </span>
         ))}
       </div>

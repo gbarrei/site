@@ -7,7 +7,18 @@
   --color-line: #23262d;
   --color-bone: #ecebe6;
   --color-mist: #9a9ea8;
-  --color-signal: #d7ff3c;
+  /* yAGGe palette. Role tokens below adapt per mode; --color-logo-* are the raw logo colors. */
+  --color-signal: #fc8400; /* main action / highlight: orange on dark */
+  --color-twin: #b57bff; /* AI digital twin: violet */
+  --color-sky: #4da3ff; /* info, secondary highlight */
+  --color-royal: #6b7cff; /* brand blue */
+  --color-danger: #ff6a55; /* errors only */
+
+  --color-logo-sky: #0078fc;
+  --color-logo-royal: #002afc;
+  --color-logo-violet: #842afc;
+  --color-logo-red: #fc1800;
+  --color-logo-orange: #fc8400;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -41,7 +52,11 @@
     --color-line: #d6d3ca;
     --color-bone: #111216;
     --color-mist: #55585f;
-    --color-signal: #4a6a00;
+    --color-signal: #002afc; /* royal blue on light */
+    --color-twin: #6a1fd0;
+    --color-sky: #005bc4;
+    --color-royal: #002afc;
+    --color-danger: #c41300;
     --grid-line: rgb(0 0 0 / 0.06);
   }
 }
@@ -60,6 +75,17 @@ body {
 ::selection {
   background: var(--color-signal);
   color: var(--color-ink);
+}
+
+.brand-stripe {
+  background: linear-gradient(
+    to right,
+    var(--color-logo-sky) 0 20%,
+    var(--color-logo-royal) 20% 40%,
+    var(--color-logo-violet) 40% 60%,
+    var(--color-logo-red) 60% 80%,
+    var(--color-logo-orange) 80% 100%
+  );
 }
 
 .grid-bg {

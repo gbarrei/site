@@ -28,6 +28,7 @@ export default function Nav() {
           : "border-b border-transparent"
       }`}
     >
+      <div aria-hidden className="brand-stripe h-[3px] w-full" />
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-10">
         <a href="#top" className="group flex items-center gap-3" aria-label="Back to top">
           <span className="grid size-9 place-items-center border border-bone/80 font-mono text-xs font-semibold tracking-tight transition-colors group-hover:border-signal group-hover:bg-signal group-hover:text-ink">
@@ -49,9 +50,9 @@ export default function Nav() {
           ))}
           <button
             onClick={() => window.dispatchEvent(new Event(OPEN_TWIN_EVENT))}
-            className="flex items-center gap-2 px-3 py-2 font-mono text-xs tracking-[0.15em] text-signal uppercase transition-colors hover:text-bone"
+            className="flex items-center gap-2 px-3 py-2 font-mono text-xs tracking-[0.15em] text-twin uppercase transition-colors hover:text-bone"
           >
-            <span className="size-1.5 rounded-full bg-signal" />
+            <span className="size-1.5 rounded-full bg-twin" />
             Ask my twin
           </button>
           <a

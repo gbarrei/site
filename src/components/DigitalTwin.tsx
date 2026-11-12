@@ -14,6 +14,9 @@ const suggestions = [
 
 export const OPEN_TWIN_EVENT = "open-twin";
 const STORAGE_KEY = "twin-questions-asked";
+const HINT_KEY = "twin-hint-seen";
+const HINT_DELAY_MS = 6000;
+const HINT_DURATION_MS = 10000;
 
 export default function DigitalTwin() {
   const [open, setOpen] = useState(false);
@@ -21,6 +24,7 @@ export default function DigitalTwin() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [asked, setAsked] = useState(0);
+  const [hint, setHint] = useState(false);
   const left = MAX_QUESTIONS - asked;
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -29,7 +33,29 @@ export default function DigitalTwin() {
   function openTwin() {
     setAsked(Number(localStorage.getItem(STORAGE_KEY)) || 0);
     setOpen(true);
+    setHint(false);
+    localStorage.setItem(HINT_KEY, "1");
   }
+
+  function dismissHint() {
+    setHint(false);
+    localStorage.setItem(HINT_KEY, "1");
+  }
+
+  // One-time nudge: a few seconds after the first visit, point at the twin, then fade away.
+  useEffect(() => {
+    if (localStorage.getItem(HINT_KEY)) return;
+    let hideTimer: ReturnType<typeof setTimeout>;
+    const showTimer = setTimeout(() => {
+      localStorage.setItem(HINT_KEY, "1");
+      setHint(true);
+      hideTimer = setTimeout(() => setHint(false), HINT_DURATION_MS);
+    }, HINT_DELAY_MS);
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
+  }, []);
 
   useEffect(() => {
     window.addEventListener(OPEN_TWIN_EVENT, openTwin);
@@ -87,24 +113,59 @@ export default function DigitalTwin() {
     }
   }
 
+  const showHint = hint && !open;
+
   return (
     <>
+      <div
+        role="status"
+        className={`fixed right-4 bottom-[92px] z-40 w-[min(17rem,calc(100vw-2rem))] border border-twin/60 bg-ink-2/95 shadow-[0_8px_40px_-12px_var(--color-twin)] backdrop-blur-xl transition-all duration-500 md:right-8 md:bottom-[124px] ${
+          showHint ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"
+        }`}
+      >
+        {showHint && (
+          <>
+            <button
+              onClick={openTwin}
+              className="block w-full py-3 pr-9 pl-4 text-left text-sm leading-snug text-bone/90 transition-colors hover:text-twin"
+            >
+              Questions about my career?{" "}
+              <span className="text-twin">Ask my AI twin &rarr;</span>
+            </button>
+            <button
+              onClick={dismissHint}
+              aria-label="Dismiss hint"
+              className="absolute top-1.5 right-1.5 grid size-6 place-items-center text-mist transition-colors hover:text-bone"
+            >
+              &times;
+            </button>
+          </>
+        )}
+        <span
+          aria-hidden
+          className="absolute -bottom-[7px] right-10 size-3 rotate-45 border-r border-b border-twin/60 bg-ink-2"
+        />
+      </div>
+
       <button
         onClick={openTwin}
         aria-label="Chat with my digital twin"
-        className={`group fixed right-5 bottom-5 z-40 flex items-center gap-3 border border-signal/50 bg-ink/90 py-2 pr-5 pl-2 backdrop-blur-xl transition-all duration-300 hover:border-signal hover:bg-signal hover:text-ink md:right-8 md:bottom-8 ${
+        className={`group fixed right-4 bottom-4 z-40 flex items-center gap-3 border border-twin bg-ink-2/95 py-2.5 pr-5 pl-2.5 shadow-[0_8px_40px_-10px_var(--color-twin)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:bg-twin hover:text-ink md:right-8 md:bottom-8 md:gap-4 md:py-3 md:pr-7 md:pl-3 ${
           open ? "pointer-events-none translate-y-4 opacity-0" : ""
         }`}
       >
-        <span className="relative grid size-9 place-items-center bg-signal font-mono text-xs font-semibold text-ink">
+        <span className="relative grid size-10 place-items-center bg-twin font-mono text-sm font-semibold text-ink md:size-12">
           GB
-          <span className="absolute -top-1 -right-1 size-2.5 rounded-full border-2 border-ink bg-signal" />
+          <span className="absolute -top-1 -right-1 flex size-3">
+            <span className="absolute inline-flex size-full rounded-full bg-twin opacity-75 motion-safe:animate-ping" />
+            <span className="relative inline-flex size-3 rounded-full border-2 border-ink-2 bg-twin" />
+          </span>
         </span>
         <span className="text-left">
-          <span className="block font-mono text-[10px] tracking-[0.2em] text-mist uppercase group-hover:text-ink/70">
+          <span className="block font-mono text-[11px] tracking-[0.2em] text-twin uppercase group-hover:text-ink/70">
             AI Digital Twin
           </span>
-          <span className="block text-sm">Ask me anything</span>
+          <span className="block text-[15px] font-medium md:text-base">Ask me anything</span>
         </span>
       </button>
 
@@ -126,9 +187,9 @@ export default function DigitalTwin() {
       >
         <header className="flex items-center justify-between border-b border-line px-5 py-4">
           <div className="flex items-center gap-3">
-            <span className="relative grid size-10 place-items-center bg-signal font-mono text-xs font-semibold text-ink">
+            <span className="relative grid size-10 place-items-center bg-twin font-mono text-xs font-semibold text-ink">
               GB
-              <span className="absolute -top-1 -right-1 size-2.5 rounded-full border-2 border-ink-2 bg-signal" />
+              <span className="absolute -top-1 -right-1 size-2.5 rounded-full border-2 border-ink-2 bg-twin" />
             </span>
             <div>
               <div className="font-medium">Guillermo&apos;s Digital Twin</div>
@@ -151,7 +212,7 @@ export default function DigitalTwin() {
             <div>
               <p className="text-2xl leading-snug font-medium tracking-tight">
                 Hi, I&apos;m Guillermo&apos;s{" "}
-                <span className="font-serif font-normal text-signal italic">digital twin.</span>
+                <span className="font-serif font-normal text-twin italic">digital twin.</span>
               </p>
               <p className="mt-3 text-[15px] leading-relaxed text-mist">
                 Ask me about my career, how I work, or what I&apos;ve built. I answer from my
@@ -167,7 +228,7 @@ export default function DigitalTwin() {
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    className="border border-line px-3 py-2 text-left text-sm text-bone/85 transition-colors hover:border-signal hover:text-signal"
+                    className="border border-line px-3 py-2 text-left text-sm text-bone/85 transition-colors hover:border-twin hover:text-twin"
                   >
                     {s}
                   </button>
@@ -186,17 +247,17 @@ export default function DigitalTwin() {
                 </div>
               ) : (
                 <div key={i} className="flex gap-3">
-                  <span className="mt-1 h-auto w-px shrink-0 bg-signal/60" />
+                  <span className="mt-1 h-auto w-px shrink-0 bg-twin/60" />
                   <p className="max-w-[90%] text-[15px] leading-relaxed whitespace-pre-wrap text-bone/90">
                     {m.content || (
                       <span className="inline-flex gap-1 py-2" aria-label="Thinking">
-                        <span className="size-1.5 animate-bounce rounded-full bg-signal [animation-delay:-0.3s]" />
-                        <span className="size-1.5 animate-bounce rounded-full bg-signal [animation-delay:-0.15s]" />
-                        <span className="size-1.5 animate-bounce rounded-full bg-signal" />
+                        <span className="size-1.5 animate-bounce rounded-full bg-twin [animation-delay:-0.3s]" />
+                        <span className="size-1.5 animate-bounce rounded-full bg-twin [animation-delay:-0.15s]" />
+                        <span className="size-1.5 animate-bounce rounded-full bg-twin" />
                       </span>
                     )}
                     {loading && m.content && i === messages.length - 1 && (
-                      <span className="ml-0.5 inline-block h-[1em] w-[2px] translate-y-[0.15em] animate-blink bg-signal" />
+                      <span className="ml-0.5 inline-block h-[1em] w-[2px] translate-y-[0.15em] animate-blink bg-twin" />
                     )}
                   </p>
                 </div>
@@ -213,7 +274,7 @@ export default function DigitalTwin() {
             }}
             className="border-t border-line p-4"
           >
-            <div className="flex items-end gap-2 border border-line bg-ink px-3 py-2 transition-colors focus-within:border-signal/60">
+            <div className="flex items-end gap-2 border border-line bg-ink px-3 py-2 transition-colors focus-within:border-twin/60">
               <textarea
                 ref={inputRef}
                 rows={1}
@@ -234,7 +295,7 @@ export default function DigitalTwin() {
                 type="submit"
                 disabled={!input.trim() || loading || left <= 0}
                 aria-label="Send"
-                className="grid size-9 shrink-0 place-items-center bg-signal font-semibold text-ink transition-opacity disabled:opacity-30"
+                className="grid size-9 shrink-0 place-items-center bg-twin font-semibold text-ink transition-opacity disabled:opacity-30"
               >
                 &uarr;
               </button>
